@@ -52,39 +52,36 @@ def code_mentor_review(state: ReviewState):
         return {"feedback": f"❌ **Error:** {data['error']}"}
 
     prompt = f"""
-    You are 'DevMentor AI', an elite technical recruiter and engineering manager.
-    Analyze the following GitHub portfolio data for the user '{username}':
-    {data}
+    You are 'Senior Arch', a world-class Principal Engineer and Mentor.
+    Analyze this GitHub data for '{username}':
+    Bio: {data.get('bio', 'No bio provided')}
+    Stats: {data.get('public_repos_count')} repos, {data.get('followers')} followers
+    Languages: {data.get('primary_languages', [])}
+    Recent Projects: {data.get('recent_repos', [])[:10]}
 
-    Your goal is to provide a comprehensive, high-signal review that feels personal and expert-level.
-    Avoid generic praise. Be specific about their tech stack.
+    Provide a deep, actionable review in easy-to-understand English. 
+    Focus on "Real-World" improvements that a Senior Developer would look for.
 
-    Please structure your response exactly as follows:
+    Structure your response as follows:
 
-    ### 🚀 The Verdict
-    A one-sentence punchy summary of their developer persona (e.g., "A promising Frontend specialist with a clear focus on React ecosystems").
+    ### 🌍 Global Portfolio Strategy
+    - What is the overall "vibe" of this portfolio? (e.g., "The Experimentalist", "The System Builder").
+    - What is missing globally? (e.g., a consistent README style, license files, or a professional profile picture/bio).
+    - One big "Global Fix" that would double their profile's impact.
 
-    ### 🛠️ Tech Stack Mastery
-    Analyze the languages used ({data.get('primary_languages', [])}). 
-    - What does this combination say about their role (Backend, Frontend, Fullstack, etc.)?
-    - Are they using modern or niche languages?
+    ### 🔍 Deep Dive: Top 5 Repositories
+    Pick the 5 most interesting repositories from the list above. For EACH one, provide:
+    1. **[Repo Name]**: A 1-sentence critique of what it is.
+    2. **The "Senior" Fix**: One specific technical improvement (e.g., "Add an `.env.example` file," "This needs a CI/CD workflow," or "The description is too vague—explain the *problem* it solves").
 
-    ### 📂 Portfolio Hygiene
-    Look at their recent projects ({data.get('recent_repos', [])}). 
-    - Comment on project naming and variety.
-    - Mention if they seem to be building tools, apps, or learning exercises.
+    ### 💡 Senior Developer "Pro-Tips"
+    Provide 3 high-level pieces of advice for their career growth based on their stack.
+    Example: "You use Python a lot; have you tried implementing Type Hints? It makes your code look 10x more professional."
 
-    ### 💡 Actionable Growth Plan
-    Give 3 specific, non-generic suggestions for this specific developer. 
-    Examples: 
-    - "Since you use TypeScript, consider adding Zod for schema validation in your next project."
-    - "Your repos seem focused on logic; try adding a 'Docs' folder with architectural diagrams."
-    - "Contribution activity seems focused on personal repos; try contributing to one of these 3 open source projects related to {data.get('primary_languages', ['your stack'])[0]}."
+    ### 🎯 Next Steps
+    A simple bulleted list of the first 3 things they should do TODAY to improve.
 
-    ### 🌟 Final Mentorship Note
-    An encouraging, high-energy closing statement.
-
-    Use professional yet modern developer terminology. Use emojis sparingly but effectively.
+    Keep it encouraging but be honest like a real mentor. Use simple English.
     """
     
     response = llm.invoke([HumanMessage(content=prompt)])
