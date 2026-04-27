@@ -1,211 +1,52 @@
 ---
-title: Student GitHub Reviewer
-emoji: 👨‍🏫
-colorFrom: green
-colorTo: blue
+title: Student Github Reviewer
+emoji: 🎓
+colorFrom: blue
+colorTo: indigo
 sdk: docker
 pinned: false
 ---
 
-# Student GitHub Reviewer
+# 🎓 DevMentor AI: Student GitHub Reviewer
 
-An AI-powered tool that analyzes a student's GitHub portfolio and delivers personalized mentorship feedback.
+DevMentor AI is an elite technical portfolio reviewer built with **LangGraph**, **Llama 3.1**, and **Streamlit**. It analyzes a student's GitHub presence, identifies their tech stack, visualizes their activity, and provides "Senior Developer" level mentorship feedback.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Hugging Face Space](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Space-blue)](https://huggingface.co/spaces/Manku69/student-github-reviewer)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-black?logo=github)](https://github.com/MAYANKSHARMA01010/student-github-reviewer)
 
 ---
 
-## Overview
+## 📖 Documentation
 
-This project uses a multi-step AI agent pipeline to fetch a user's GitHub profile and repositories, then generates a professional code review with actionable suggestions — powered by Groq's Llama 3.1 model.
+We have provided comprehensive guides for every aspect of the project:
 
-**Note:** This project is currently configured to run locally.
-
----
-
-## Architecture
-
-```
-User Request
-    |
-    v
-FastAPI Server  (POST /review?username=...)
-    |
-    v
-LangGraph Pipeline
-    |
-    +-- Step 1: extract_github_data  -->  GitHub API
-    |
-    +-- Step 2: code_mentor_review   -->  Groq / Llama 3.1
-    |
-    v
-JSON Response  (extracted data + mentor feedback)
-    |
-    v
-Streamlit UI  (renders feedback to the user)
-```
+*   **[⚙️ Installation Guide](docs/INSTALL.md)**: How to set up the project locally from scratch.
+*   **[📖 Usage Guide](docs/USAGE.md)**: How to navigate the dashboard and generate reviews.
+*   **[🚢 Deployment Guide](docs/DEPLOYMENT.md)**: How to deploy to Hugging Face or Docker.
+*   **[🏗️ Architecture & Logic](docs/ARCHITECTURE.md)**: A deep dive into the LangGraph and AI logic.
 
 ---
 
-## Tech Stack
+## 🚀 Quick Start (Local)
 
-| Layer       | Technology              |
-|-------------|------------------------|
-| Frontend    | Streamlit               |
-| Backend     | FastAPI                 |
-| Agent       | LangGraph               |
-| LLM         | Groq (Llama 3.1 8B)    |
+1.  **Clone**: `git clone https://github.com/MAYANKSHARMA01010/student-github-reviewer.git`
+2.  **Install**: `pip install -r requirements.txt`
+3.  **Config**: Add `GROQ_API_KEY` to `.env`.
+4.  **Run**: `streamlit run ui/app.py`
 
 ---
 
-## Getting Started
+## 🛠️ Key Features
 
-### Prerequisites
-
-- Python 3.10 or higher
-- A Groq API key — get one free at https://console.groq.com/keys
-- A GitHub Personal Access Token — generate one at https://github.com/settings/tokens (scope: `public_repo`)
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/MAYANKSHARMA01010/student-github-reviewer.git
-cd student-github-reviewer
-
-# Create and activate a virtual environment
-python -m venv venv
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Set up environment variables
-cp .env.example .env
-# Open .env and add your API keys
-```
-
-### Running Locally
-
-Start the backend:
-
-```bash
-uvicorn main:app --reload
-```
-
-In a separate terminal, start the frontend:
-
-```bash
-streamlit run ui/app.py
-```
-
-- Backend API: http://127.0.0.1:8000
-- API Docs (Swagger): http://127.0.0.1:8000/docs
-- Frontend UI: http://localhost:8501
+*   **🔍 Deep Analysis**: Scans up to 100 repositories for an accurate tech stack profile.
+*   **📊 Interactive Visuals**: Plotly charts, contribution heatmaps, and global stats cards.
+*   **🤖 AI Mentorship**: Senior Developer level feedback and repo-specific fixes.
+*   **📥 Exportable Reports**: Download your mentorship analysis as Markdown.
 
 ---
 
-## API Reference
+## 🤝 Contributing
 
-### GET /
+Contributions are welcome! Feel free to open an issue or submit a pull request on the [GitHub Repository](https://github.com/MAYANKSHARMA01010/student-github-reviewer).
 
-Health check endpoint.
-
-**Response:**
-```json
-{ "message": "GitHub Reviewer backend is running perfectly!" }
-```
-
-### POST /review
-
-Analyzes a GitHub user's portfolio and returns AI mentor feedback.
-
-**Query Parameter:**
-
-| Parameter  | Type   | Description              |
-|------------|--------|--------------------------|
-| `username` | string | GitHub username to review |
-
-**Example:**
-```bash
-curl -X POST "http://127.0.0.1:8000/review?username=torvalds"
-```
-
-**Response:**
-```json
-{
-  "username": "torvalds",
-  "extracted_data": {
-    "recent_repos": ["linux", "subsurface-for-dirk"],
-    "primary_languages": ["C", "C++"],
-    "public_repos_count": 7
-  },
-  "mentor_feedback": "Your expertise in C is evident..."
-}
-```
-
----
-
-## Project Structure
-
-```
-student-github-reviewer/
-├── agent/
-│   ├── __init__.py        # Package initializer
-│   ├── graph.py           # LangGraph workflow
-│   ├── nodes.py           # Agent node functions
-│   └── state.py           # State schema
-├── ui/
-│   └── app.py             # Streamlit frontend
-├── main.py                # FastAPI entry point
-├── requirements.txt       # Dependencies
-├── .env.example           # Environment variable template
-├── render.yaml            # Render deployment config
-├── .gitignore
-├── LICENSE
-└── README.md
-```
-
----
-
-
-
----
-
----
-## ☁️ Hugging Face Deployment & Usage
-
-This project is optimized for deployment on Hugging Face Spaces using Docker.
-
-### Cloning from Hugging Face
-To clone the source code directly from the Hugging Face Space:
-```bash
-git clone https://huggingface.co/spaces/Manku69/student-github-reviewer
-cd student-github-reviewer
-```
-
-### Deployment Notes
-- **SDK**: Docker (Debian Slim)
-- **Architecture**: The app runs the LangGraph agent directly within the Streamlit process for maximum reliability on HF Spaces.
-- **Environment Secrets**: Requires `GROQ_API_KEY` and `GITHUB_TOKEN` to be set in the Space settings.
-
----
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Commit your changes: `git commit -m 'feat: add your feature'`
-4. Push to the branch: `git push origin feature/your-feature`
-5. Open a Pull Request
-
----
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
-
-Built by [Mayank Sharma](https://github.com/MAYANKSHARMA01010)
+**Crafted with ❤️ by [Mayank Sharma](https://github.com/MAYANKSHARMA01010)**
