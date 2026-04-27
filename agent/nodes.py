@@ -17,27 +17,38 @@ def extract_github_data(state: ReviewState):
         user_url = f"https://api.github.com/users/{username}"
         user_resp = requests.get(user_url, headers=headers)
         
-        # Fetch Top 10 Repos (sorted by stars/updates)
-        repos_url = f"https://api.github.com/users/{username}/repos?sort=updated&per_page=10"
+        # Fetch up to 100 Repos to get accurate language distribution
+        repos_url = f"https://api.github.com/users/{username}/repos?per_page=100&sort=updated"
         repos_resp = requests.get(repos_url, headers=headers)
         
         if user_resp.status_code == 200 and repos_resp.status_code == 200:
             u_data = user_resp.json()
-            r_data = repos_resp.json()
+            all_repos = repos_resp.json()
             
-            repo_details = [
+            # Extract detailed info for top 10 recent/relevant repos
+            recent_repos = [
                 {"name": r["name"], "desc": r.get("description", ""), "lang": r.get("language", "")} 
-                for r in r_data
+                for r in all_repos[:10]
             ]
             
-            languages = list(set([r["lang"] for r in repo_details if r["lang"]]))
+            # Calculate language frequency across ALL repos
+            lang_counts = {}
+            for r in all_repos:
+                lang = r.get("language")
+                if lang:
+                    lang_counts[lang] = lang_counts.get(lang, 0) + 1
+            
+            # Sort languages by frequency
+            sorted_langs = sorted(lang_counts.items(), key=lambda x: x[1], reverse=True)
+            primary_languages = [l[0] for l in sorted_langs[:5]] # Top 5 languages
             
             real_data = {
                 "bio": u_data.get("bio", ""),
                 "public_repos_count": u_data.get("public_repos", 0),
                 "followers": u_data.get("followers", 0),
-                "recent_repos": repo_details,
-                "primary_languages": languages,
+                "recent_repos": recent_repos,
+                "primary_languages": primary_languages,
+                "all_languages": lang_counts, # Full distribution for AI to see
             }
             return {"github_data": real_data}
         else:
