@@ -3,6 +3,18 @@ import streamlit as st
 import requests
 import json
 
+import sys
+from pathlib import Path
+
+# Add the parent directory to sys.path so we can import the agent
+sys.path.append(str(Path(__file__).parent.parent))
+
+try:
+    from agent.graph import github_reviewer_app
+    DIRECT_MODE = True
+except ImportError:
+    DIRECT_MODE = False
+
 BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
 
 st.set_page_config(
@@ -50,15 +62,27 @@ if analyze:
     else:
         with st.spinner(f"Fetching data for **{username}**..."):
             try:
-                response = requests.post(
-                    f"{BACKEND_URL}/review?username={username}",
-                    timeout=120,
-                )
+                if DIRECT_MODE:
+                    # Run the agent directly (ideal for HF Spaces)
+                    initial_state = {"username": username}
+                    result = github_reviewer_app.invoke(initial_state)
+                    
+                    extracted = result.get("github_data", {})
+                    feedback = result.get("feedback", "")
+                    status_code = 200
+                else:
+                    # Fallback to backend API
+                    response = requests.post(
+                        f"{BACKEND_URL}/review?username={username}",
+                        timeout=120,
+                    )
+                    status_code = response.status_code
+                    if status_code == 200:
+                        data = response.json()
+                        extracted = data.get("extracted_data", {})
+                        feedback = data.get("mentor_feedback", "")
 
-                if response.status_code == 200:
-                    data = response.json()
-                    extracted = data.get("extracted_data", {})
-                    feedback = data.get("mentor_feedback", "")
+                if status_code == 200:
 
                     st.success("Analysis complete.")
                     st.divider()

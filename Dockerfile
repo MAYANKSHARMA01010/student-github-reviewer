@@ -17,15 +17,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application code
 COPY . .
 
-# Make the start script executable
-RUN chmod +x start.sh
-
 # Set environment variables
-ENV BACKEND_URL=http://localhost:8000
 ENV PYTHONUNBUFFERED=1
 
-# Expose the port Streamlit will run on
+# Expose the port Streamlit will run on (HF default is 7860)
 EXPOSE 7860
 
-# Run the startup script
-CMD ["./start.sh"]
+# Run the Streamlit app directly
+ENTRYPOINT ["streamlit", "run", "ui/app.py", "--server.port=7860", "--server.address=0.0.0.0"]

@@ -187,6 +187,7 @@ cd student-github-reviewer
 
 ### Deployment Notes
 - **SDK**: Docker (Debian Slim)
+- **Architecture**: The app runs the LangGraph agent directly within the Streamlit process for maximum reliability on HF Spaces.
 - **Environment Secrets**: Requires `GROQ_API_KEY` and `GITHUB_TOKEN` to be set in the Space settings.
 
 ---
