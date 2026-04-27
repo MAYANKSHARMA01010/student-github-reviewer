@@ -1,8 +1,18 @@
+---
+title: Student GitHub Reviewer
+emoji: 👨‍🏫
+colorFrom: green
+colorTo: blue
+sdk: docker
+pinned: false
+---
+
 # Student GitHub Reviewer
 
 An AI-powered tool that analyzes a student's GitHub portfolio and delivers personalized mentorship feedback.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Hugging Face Space](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Space-blue)](https://huggingface.co/spaces/Manku69/student-github-reviewer)
 
 ---
 
@@ -160,6 +170,24 @@ student-github-reviewer/
 ---
 
 
+
+---
+
+---
+## ☁️ Hugging Face Deployment & Usage
+
+This project is optimized for deployment on Hugging Face Spaces using Docker.
+
+### Cloning from Hugging Face
+To clone the source code directly from the Hugging Face Space:
+```bash
+git clone https://huggingface.co/spaces/Manku69/student-github-reviewer
+cd student-github-reviewer
+```
+
+### Deployment Notes
+- **SDK**: Docker (Debian Slim)
+- **Environment Secrets**: Requires `GROQ_API_KEY` and `GITHUB_TOKEN` to be set in the Space settings.
 
 ---
 
